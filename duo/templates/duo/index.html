@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Duo</title>
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<body>
+{% verbatim %}
+<div id="app">
+    <input v-model="searchQuery" type="text">
+    <div v-for="sentence in sentences">
+        {{ sentence.english }}: {{ sentence.japanese }}
+    </div>
+</div>
+{% endverbatim %}
+</body>
+
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            searchQuery: "",
+            timeout: null,
+            sentences: []
+        },
+        watch: {
+            searchQuery: function (value) {
+                let self = this;
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(
+                    function () {
+                        axios.get(`/search?query=${value}`)
+                            .then(function (response) {
+                                self.sentences = response.data.result;
+                            });
+                    },
+                    100,
+                );
+            }
+        }
+    })
+</script>
+</html>
