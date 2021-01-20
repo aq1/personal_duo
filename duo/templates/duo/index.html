@@ -16,8 +16,8 @@
     </div>
     <div class="flex-item">
         <div v-for="sentence in sentences">
-            <div class="japanese">{{ sentence.english }}</div>
-            <div class="english">{{ sentence.japanese }}</div>
+            <div class="japanese" v-html="sentence.japanese"></div>
+            <div class="english" v-html="sentence.english"></div>
         </div>
     </div>
 </div>
@@ -30,7 +30,14 @@
         data: {
             searchQuery: "",
             timeout: null,
-            sentences: [{english: 'hi', japanese: 'there'}]
+            sentences: [{english: '<b>loooogngng</b> asnd asnkjd nakjsdn ajsk', japanese: 'there <i>iii</i>'}]
+        },
+        methods: {
+            highlightString: function (value, searchValue) {
+                let re = new RegExp(`(${searchValue})`, 'gi');
+                console.log(value.replace(re, '<mark>$1</mark>'));
+                return value.replace(re, '<mark>$1</mark>');
+            }
         },
         watch: {
             searchQuery: function (value) {
@@ -40,13 +47,20 @@
                     function () {
                         axios.get(`/search?query=${value}`)
                             .then(function (response) {
-                                self.sentences = response.data.result;
+                                self.sentences = [];
+                                for (let each of response.data.result) {
+                                    self.sentences.push({
+                                        english: self.highlightString(each.english, value),
+                                        japanese: self.highlightString(each.japanese, value)
+                                    });
+                                }
                             });
                     },
                     500,
                 );
             }
-        }
+        },
+
     })
 </script>
 
@@ -62,6 +76,7 @@
 
     div.english {
         padding-left: 20px;
+        color: dimgrey;
     }
 
     #app {
@@ -77,6 +92,11 @@
         flex-grow: 4;
         flex: 1;
         margin: 10px;
+    }
+
+    mark {
+        color: tomato;
+        background-color: white;
     }
 </style>
 </html>
