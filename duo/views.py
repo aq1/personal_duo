@@ -14,8 +14,8 @@ def search(request):
     if query:
         sentences = Sentence.objects.raw('''
             select * from duo_sentence
-            where english &@ '%s'
-            or japanese &@ '%s'
+            where english &@ %s
+            or japanese &@ %s
             limit 10
         ''', [query, query])
         data = [

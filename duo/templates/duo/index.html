@@ -11,9 +11,14 @@
 <body>
 {% verbatim %}
 <div id="app">
-    <input v-model="searchQuery" type="text">
-    <div v-for="sentence in sentences">
-        {{ sentence.english }}: {{ sentence.japanese }}
+    <div class="flex-item">
+        <input v-model="searchQuery" type="text" placeholder="Search phrase">
+    </div>
+    <div class="flex-item">
+        <div v-for="sentence in sentences">
+            <div class="japanese">{{ sentence.english }}</div>
+            <div class="english">{{ sentence.japanese }}</div>
+        </div>
     </div>
 </div>
 {% endverbatim %}
@@ -25,7 +30,7 @@
         data: {
             searchQuery: "",
             timeout: null,
-            sentences: []
+            sentences: [{english: 'hi', japanese: 'there'}]
         },
         watch: {
             searchQuery: function (value) {
@@ -44,4 +49,34 @@
         }
     })
 </script>
+
+<style>
+    body {
+        padding: 15px;
+    }
+
+    input, div {
+        font-size: 20px;
+        line-height: 1.5;
+    }
+
+    div.english {
+        padding-left: 20px;
+    }
+
+    #app {
+        font-size: 20px;
+        line-height: 20px;
+        flex-direction: column;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .flex-item {
+        flex-grow: 4;
+        flex: 1;
+        margin: 10px;
+    }
+</style>
 </html>
